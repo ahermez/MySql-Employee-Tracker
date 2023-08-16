@@ -6,7 +6,7 @@ const db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
-    password: "0143102",
+    password: "password",
     database: "employees_db",
   },
   console.log("connected")
@@ -89,41 +89,125 @@ function viewalldepartments() {
     console.table(data), employeeTracker();
   });
 }
-function adddepartment(){
-    inquirer.prompt([
-{
-    type: "input", 
-    name: "adddepartment",
-    message: "enter department to add",
-},
-      
-    ]).then((response) =>{
-      let nameOfDepartment = response.adddepartment  
-      db.query(`INSERT INTO department (dept_name) VALUES ("${nameOfDepartment}")`, function (err, data){
-        if (err) {
-     console.log (err)
-
+function adddepartment() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "adddepartment",
+        message: "enter department to add",
+      },
+    ])
+    .then((response) => {
+      let nameOfDepartment = response.adddepartment;
+      db.query(
+        `INSERT INTO department (dept_name) VALUES ("${nameOfDepartment}")`,
+        function (err, data) {
+          if (err) {
+            console.log(err);
+          }
+          viewalldepartments(), employeeTracker();
         }
-    viewalldepartments(), 
-    employeeTracker()
-      })
-    })
+      );
+    });
 }
 function addrole() {
-  db.query("SELECT * FROM role", function (err, data) {
+  db.query("SELECT * FROM department", function (err, data) {
     if (err) {
       console.log(err);
+      return employeeTracker();
     }
-    console.table(data), employeeTracker();
+    const departmentList = data.map((dept) => ({
+      value: dept.id,
+      name: dept.dept_name,
+    }));
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "addRole",
+          message: "what role would you like to add",
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "what's the salary expectation for this role?",
+        },
+        {
+          type: "list",
+          name: "departmentId",
+          message: "which department does this role belong to?",
+          choices: departmentList,
+        },
+      ])
+      .then((response) => {
+        let role = response.addRole;
+        let salary = response.salary;
+        let departmentId = response.departmentId;
+        db.query(
+          `INSERT INTO role (title, salary, department_id)
+        VALUES
+        ("${role}", "${salary}","${departmentId}")
+        `,
+          function (err, data) {
+            if (err) {
+              console.log(err), employeeTracker();
+            }
+            viewallroles(), employeeTracker();
+          }
+        );
+      });
   });
 }
 function addemployee() {
-  db.query("SELECT * FROM employees", function (err, data) {
+  db.query("SELECT * FROM role", function (err, data) {
     if (err) {
       console.log(err);
+      employeeTracker();
     }
-    console.table(data), employeeTracker();
-  });
+    const roles = data.map((role) => ({
+      value: role.id,
+      name: role.title,
+    }));
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "firstName",
+          message: "what's the employee's first name?",
+        },
+        {
+          type: "input",
+          name: "lastName",
+          message: "what's the employee's last name?",
+        },
+        {
+          type: "list",
+          name: "roleChoice",
+          message: "what's the employee's role?",
+          choices: roles,
+        },
+      ])
+      .then((answers) => {
+        let firstName = answers.firstName;
+        let lastName = answers.lastName;
+        let roleId = answers.roleChoice;
+        db.query(
+          `
+  INSERT INTO employee (first_name, last_name, role_id)
+  VALUES 
+  ("${firstName}", "${lastName}", "${roleId}")
+  `,
+          function (err, data) {
+            if (err) {
+              console.log(err);
+              employeeTracker();
+            }
+            viewallemployees(), employeeTracker();
+          }
+        );
+      });
+     });
 }
 function updateemployee() {
   db.query("SELECT * FROM employees", function (err, data) {
@@ -134,8 +218,8 @@ function updateemployee() {
   });
 }
 function quit() {
-  console.log("application close")
-  process.exit()
+  console.log("application close");
+  process.exit();
 }
 
 employeeTracker();
