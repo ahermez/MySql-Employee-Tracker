@@ -11,11 +11,11 @@ const db = mysql.createConnection(
   },
   console.log("connected")
 );
-function employeeTracker() {
   const logotext = logo({
     name: "employee-tracker",
   }).render();
   console.log(logotext);
+  function employeeTracker() {
   inquirer
     .prompt([
       {
@@ -207,14 +207,44 @@ function addemployee() {
           }
         );
       });
-     });
+  });
 }
 function updateemployee() {
   db.query("SELECT * FROM employees", function (err, data) {
     if (err) {
       console.log(err);
+      employeeTracker();
     }
-    console.table(data), employeeTracker();
+    const employeeChoices = data.map((employee) => ({
+      value: employee.id,
+      firstName: employee.first_name,
+      lastName: employee.last_name,
+    }));
+    inquirer.prompt([
+      {
+        type: "list",
+        name: "employeeId",
+        message: "which employee would you like to update?",
+        choices: employeeChoices,
+      },
+      {
+        type: "input",
+        name: "firstName",
+        message: "update firstName",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "update lastName",
+      },
+    ]).then((update)=>{
+      let employeeId=update.employeeId;
+      let updateFirst = update.firstName;
+      let updateLast = update.lastName;
+      db.query(`UPDATE employee SET (first_name, last_name)WHERE id=${employeeId} VALUES ("${updateFirst}", "${updateLast}")`, function(err, data){
+        err? console.log(err): viewallemployees(), employeeTracker()
+      })
+    })
   });
 }
 function quit() {
