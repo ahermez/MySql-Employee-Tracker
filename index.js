@@ -106,7 +106,7 @@ function adddepartment() {
           if (err) {
             console.log(err);
           }
-          viewalldepartments(), employeeTracker();
+          viewalldepartments()
         }
       );
     });
@@ -126,7 +126,7 @@ function addrole() {
         {
           type: "input",
           name: "addRole",
-          message: "what role would you like to add",
+          message: "what role would you like to add:",
         },
         {
           type: "input",
@@ -153,7 +153,7 @@ function addrole() {
             if (err) {
               console.log(err), employeeTracker();
             }
-            viewallroles(), employeeTracker();
+            viewallroles()
           }
         );
       });
@@ -203,14 +203,14 @@ function addemployee() {
               console.log(err);
               employeeTracker();
             }
-            viewallemployees(), employeeTracker();
+            viewallemployees()
           }
         );
       });
   });
 }
 function updateemployee() {
-  db.query("SELECT * FROM employees", function (err, data) {
+  db.query("SELECT * FROM employee", function (err, data) {
     if (err) {
       console.log(err);
       employeeTracker();
@@ -242,7 +242,7 @@ function updateemployee() {
       let updateFirst = update.firstName;
       let updateLast = update.lastName;
       db.query(`UPDATE employee SET (first_name, last_name)WHERE id=${employeeId} VALUES ("${updateFirst}", "${updateLast}")`, function(err, data){
-        err? console.log(err): viewallemployees(), employeeTracker()
+        err? console.log(err): viewallemployees()
       })
     })
   });
