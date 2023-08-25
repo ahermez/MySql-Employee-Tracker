@@ -67,7 +67,7 @@ The project follows the MVC (Model-View-Controller) paradigm for a structured or
 - middlewares/: Custom middleware functions.
 - db/: Database-related files (migrations, seeders).
 
-# Project Reference https://drive.google.com/file/d/1lS4OV2-VrcfCp5BuhA1ojTD2Aq_QF4wa/view
+# Project Reference 
 [Video Link] <a href="https://drive.google.com/file/d/1lS4OV2-VrcfCp5BuhA1ojTD2Aq_QF4wa/view">MySQL-Employee-Tracker</a>
 [GitHub page] <a href="https://github.com/ahermez/MySql-Employee-Tracker">MySQL-Employee-Tracker</a>
 
