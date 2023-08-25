@@ -215,7 +215,7 @@ function updateemployee() {
       employeeTracker();
     }
     const employeeChoices = data.map((employee) => ({
-      value: employee.id,
+      id: employee.id,
       firstName: employee.first_name,
       lastName: employee.last_name,
         }));
@@ -244,7 +244,7 @@ function updateemployee() {
         let updateFirst = update.firstName;
         let updateLast = update.lastName;
         db.query(
-          `UPDATE employee SET first_name = ${updateFirst}, last_name = ${updateLast} WHERE id=${employeeId};`,
+          `UPDATE employee SET first_name = "${updateFirst}", last_name = "${updateLast}" WHERE id=${employeeId};`,
           function (err, data) {
             err ? console.log(err) : viewallemployees(); 
           }
