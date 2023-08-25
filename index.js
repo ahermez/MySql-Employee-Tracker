@@ -11,11 +11,11 @@ const db = mysql.createConnection(
   },
   console.log("connected")
 );
-  const logotext = logo({
-    name: "employee-tracker",
-  }).render();
-  console.log(logotext);
-  function employeeTracker() {
+const logotext = logo({
+  name: "employee-tracker",
+}).render();
+console.log(logotext);
+function employeeTracker() {
   inquirer
     .prompt([
       {
@@ -64,7 +64,6 @@ const db = mysql.createConnection(
       }
     });
 }
-
 function viewallemployees() {
   db.query("SELECT * FROM employee", function (err, data) {
     if (err) {
@@ -106,7 +105,7 @@ function adddepartment() {
           if (err) {
             console.log(err);
           }
-          viewalldepartments()
+          viewalldepartments();
         }
       );
     });
@@ -153,7 +152,7 @@ function addrole() {
             if (err) {
               console.log(err), employeeTracker();
             }
-            viewallroles()
+            viewallroles();
           }
         );
       });
@@ -203,7 +202,7 @@ function addemployee() {
               console.log(err);
               employeeTracker();
             }
-            viewallemployees()
+            viewallemployees();
           }
         );
       });
@@ -219,32 +218,38 @@ function updateemployee() {
       value: employee.id,
       firstName: employee.first_name,
       lastName: employee.last_name,
-    }));
-    inquirer.prompt([
-      {
-        type: "list",
-        name: "employeeId",
-        message: "which employee would you like to update?",
-        choices: employeeChoices,
-      },
-      {
-        type: "input",
-        name: "firstName",
-        message: "update firstName",
-      },
-      {
-        type: "input",
-        name: "lastName",
-        message: "update lastName",
-      },
-    ]).then((update)=>{
-      let employeeId=update.employeeId;
-      let updateFirst = update.firstName;
-      let updateLast = update.lastName;
-      db.query(`UPDATE employee SET (first_name, last_name)WHERE id=${employeeId} VALUES ("${updateFirst}", "${updateLast}")`, function(err, data){
-        err? console.log(err): viewallemployees()
-      })
-    })
+        }));
+        console.log(employeeChoices)
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "employeeId",
+          message: "which employee would you like to update (select employee by ID#?",
+          // choices: [employeeChoices],
+        },
+        {
+          type: "input",
+          name: "firstName",
+          message: "update firstName",
+        },
+        {
+          type: "input",
+          name: "lastName",
+          message: "update lastName",
+        },
+      ])
+      .then((update) => {
+        let employeeId = update.employeeId;
+        let updateFirst = update.firstName;
+        let updateLast = update.lastName;
+        db.query(
+          `UPDATE employee SET first_name = ${updateFirst}, last_name = ${updateLast} WHERE id=${employeeId};`,
+          function (err, data) {
+            err ? console.log(err) : viewallemployees(); 
+          }
+        );
+      });
   });
 }
 function quit() {
